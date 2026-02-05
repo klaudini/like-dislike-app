@@ -1,0 +1,44 @@
+nano .gitignore
+```
+
+Copia este contenido:
+```
+# Dependencies
+**/node_modules/
+**/dist/
+**/build/
+
+# Environment variables
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
+
+# Logs
+**/logs/
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+**/coverage/
+**/.nyc_output/
+
+# Build files
+**/*.tsbuildinfo
+
+# Temporary
+**/tmp/
+**/temp/
