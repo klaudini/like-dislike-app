@@ -154,7 +154,7 @@ export class CharactersService {
   }
 
   /**
-   * Obtiene el estatus de Pikachu (BONUS)
+   * Obtiene el estatus de Pikachu
    */
   async getPikachuStatus(): Promise<PikachuStatusDto> {
     this.logger.log('Checking Pikachu status');
