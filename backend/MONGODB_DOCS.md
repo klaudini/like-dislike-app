@@ -1,4 +1,4 @@
-# 📊 Documentación de MongoDB - Colección Characters
+# Documentación de MongoDB - Colección Personajes
 
 ## Estructura de la Base de Datos
 
