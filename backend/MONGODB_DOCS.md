@@ -261,13 +261,3 @@ Cuando la API retorna un personaje, incluye los campos calculados:
   }
 }
 ```
-
----
-
-## Buenas Prácticas
-
-1. **No eliminar documentos**: Los votos son históricos, no se deben borrar
-2. **Usar índices**: Las consultas por `likes`, `dislikes` y `lastEvaluated` están optimizadas
-3. **externalId único**: Evita duplicados de personajes
-4. **Metadata flexible**: Permite guardar información específica de cada API sin modificar el schema
-5. **Timestamps automáticos**: `createdAt` y `updatedAt` se manejan automáticamente
