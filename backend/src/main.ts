@@ -1,9 +1,9 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import helmet from 'helmet';
-import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import helmet from "helmet";
+import { AppModule } from "./app.module";
+import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,14 +15,16 @@ async function bootstrap() {
   app.use(helmet());
 
   // CORS configurado desde variables de entorno
-  const corsOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:5173'];
+  const corsOrigins = process.env.CORS_ORIGIN?.split(",") || [
+    "http://localhost:5173",
+  ];
   app.enableCors({
     origin: corsOrigins,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     credentials: true,
   });
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix("api");
 
   // Validación global de DTO
   app.useGlobalPipes(
@@ -35,15 +37,17 @@ async function bootstrap() {
 
   // Configuración de Swagger
   const config = new DocumentBuilder()
-    .setTitle('Like/Dislike API')
-    .setDescription('API para sistema de votación de personajes de Rick and Morty, Pokémon y Superhéroes')
-    .setVersion('1.0')
-    .addTag('characters', 'Endpoints relacionados con personajes')
-    .addTag('stats', 'Endpoints de estadísticas y reportes')
+    .setTitle("Like/Dislike API")
+    .setDescription(
+      "API para sistema de votación de personajes de Rick and Morty, Pokémon y Superhéroes",
+    )
+    .setVersion("1.0")
+    .addTag("characters", "Endpoints relacionados con personajes")
+    .addTag("stats", "Endpoints de estadísticas y reportes")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup("api/docs", app, document);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
@@ -51,7 +55,7 @@ async function bootstrap() {
   console.log(`
   Corriendo en: http://localhost:${port}
   Swagger: http://localhost:${port}/api/docs
-  CORS habilitado para: ${corsOrigins.join(', ')}
+  CORS habilitado para: ${corsOrigins.join(", ")}
   `);
 }
 

@@ -1,23 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
-import { CharactersService } from '../src/characters/services/characters.service';
-import { ExternalApisService } from '../src/characters/services/external-apis.service';
-import { Character } from '../src/characters/entities/character.entity';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getModelToken } from "@nestjs/mongoose";
+import { CharactersService } from "../src/characters/services/characters.service";
+import { ExternalApisService } from "../src/characters/services/external-apis.service";
+import { Character } from "../src/characters/entities/character.entity";
 
-describe('CharactersService', () => {
+describe("CharactersService", () => {
   let service: CharactersService;
   let mockCharacterModel: any;
   let mockExternalApisService: any;
 
   const mockCharacter = {
-    externalId: 'pokemon-25',
-    name: 'Pikachu',
-    image: 'https://...',
-    category: 'pokemon',
+    externalId: "pokemon-25",
+    name: "Pikachu",
+    image: "https://...",
+    category: "pokemon",
     likes: 5,
     dislikes: 2,
     lastEvaluated: new Date(),
-    metadata: { types: ['electric'] },
+    metadata: { types: ["electric"] },
     save: jest.fn().mockResolvedValue(this),
   };
 
@@ -55,17 +55,17 @@ describe('CharactersService', () => {
     service = module.get<CharactersService>(CharactersService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('getRandomCharacter', () => {
-    it('should return a random character from external API', async () => {
+  describe("getRandomCharacter", () => {
+    it("should return a random character from external API", async () => {
       const mockResult = {
-        externalId: 'pokemon-25',
-        name: 'Pikachu',
-        image: 'https://...',
-        category: 'pokemon' as const,
+        externalId: "pokemon-25",
+        name: "Pikachu",
+        image: "https://...",
+        category: "pokemon" as const,
         metadata: {},
       };
 
@@ -78,15 +78,15 @@ describe('CharactersService', () => {
     });
   });
 
-  describe('vote', () => {
-    it('should create a new character with a like vote', async () => {
+  describe("vote", () => {
+    it("should create a new character with a like vote", async () => {
       const voteDto = {
-        externalId: 'pokemon-25',
-        voteType: 'like' as const,
-        name: 'Pikachu',
-        image: 'https://...',
-        category: 'pokemon' as const,
-        metadata: { types: ['electric'] },
+        externalId: "pokemon-25",
+        voteType: "like" as const,
+        name: "Pikachu",
+        image: "https://...",
+        category: "pokemon" as const,
+        metadata: { types: ["electric"] },
       };
 
       mockCharacterModel.findOne.mockReturnValue({
@@ -109,13 +109,13 @@ describe('CharactersService', () => {
       expect(result.dislikes).toBe(0);
     });
 
-    it('should increment likes for existing character', async () => {
+    it("should increment likes for existing character", async () => {
       const voteDto = {
-        externalId: 'pokemon-25',
-        voteType: 'like' as const,
-        name: 'Pikachu',
-        image: 'https://...',
-        category: 'pokemon' as const,
+        externalId: "pokemon-25",
+        voteType: "like" as const,
+        name: "Pikachu",
+        image: "https://...",
+        category: "pokemon" as const,
         metadata: {},
       };
 
@@ -137,24 +137,24 @@ describe('CharactersService', () => {
     });
   });
 
-  describe('getPikachuStatus', () => {
-    it('should return exists: false when Pikachu has not been evaluated', async () => {
+  describe("getPikachuStatus", () => {
+    it("should return exists: false when Pikachu has not been evaluated", async () => {
       mockCharacterModel.findOne.mockResolvedValue(null);
 
       const result = await service.getPikachuStatus();
 
       expect(result.exists).toBe(false);
-      expect(result.message).toContain('aún no ha sido evaluado');
+      expect(result.message).toContain("aún no ha sido evaluado");
     });
 
-    it('should return Pikachu data when it exists', async () => {
+    it("should return Pikachu data when it exists", async () => {
       mockCharacterModel.findOne.mockResolvedValue(mockCharacter);
 
       const result = await service.getPikachuStatus();
 
       expect(result.exists).toBe(true);
       expect(result.data).toBeDefined();
-      expect(result.data.name).toBe('Pikachu');
+      expect(result.data.name).toBe("Pikachu");
     });
   });
 });

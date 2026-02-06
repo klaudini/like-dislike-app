@@ -1,11 +1,11 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 export type CharacterDocument = Character & Document;
 
-@Schema({ 
+@Schema({
   timestamps: true,
-  collection: 'characters'
+  collection: "characters",
 })
 export class Character {
   @Prop({ required: true, unique: true })
@@ -16,10 +16,10 @@ export class Character {
   @Prop({ required: true })
   image: string;
 
-  @Prop({ 
-    required: true, 
-    enum: ['rickandmorty', 'pokemon', 'superhero'],
-    index: true 
+  @Prop({
+    required: true,
+    enum: ["rickandmorty", "pokemon", "superhero"],
+    index: true,
   })
   category: string;
 
@@ -44,16 +44,16 @@ CharacterSchema.index({ category: 1, dislikes: -1 });
 CharacterSchema.index({ lastEvaluated: -1 });
 
 // Virtual para calcular total de votos
-CharacterSchema.virtual('totalVotes').get(function() {
+CharacterSchema.virtual("totalVotes").get(function () {
   return this.likes + this.dislikes;
 });
 
 // Virtual para calcular porcentaje de likes
-CharacterSchema.virtual('likePercentage').get(function() {
+CharacterSchema.virtual("likePercentage").get(function () {
   const total = this.likes + this.dislikes;
   return total > 0 ? Math.round((this.likes / total) * 100) : 0;
 });
 
 // Incluir virtuals en JSON y Object
-CharacterSchema.set('toJSON', { virtuals: true });
-CharacterSchema.set('toObject', { virtuals: true });
+CharacterSchema.set("toJSON", { virtuals: true });
+CharacterSchema.set("toObject", { virtuals: true });

@@ -1,14 +1,14 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { CharactersModule } from './characters/characters.module';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { MongooseModule } from "@nestjs/mongoose";
+import { ThrottlerModule } from "@nestjs/throttler";
+import { CharactersModule } from "./characters/characters.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ".env",
     }),
 
     MongooseModule.forRoot(process.env.MONGODB_URI, {
@@ -17,10 +17,12 @@ import { CharactersModule } from './characters/characters.module';
     }),
 
     // Tasa de limitacion en tiempo
-    ThrottlerModule.forRoot([{
-      ttl: parseInt(process.env.RATE_LIMIT_TTL) || 60000, // 60 seg
-      limit: parseInt(process.env.RATE_LIMIT_MAX) || 100, // 100 req
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: parseInt(process.env.RATE_LIMIT_TTL) || 60000, // 60 seg
+        limit: parseInt(process.env.RATE_LIMIT_MAX) || 100, // 100 req
+      },
+    ]),
 
     // Módulo de los personajes
     CharactersModule,

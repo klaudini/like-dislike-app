@@ -34,7 +34,7 @@ export interface PokemonCharacter {
   sprites: {
     front_default: string;
     other: {
-      'official-artwork': {
+      "official-artwork": {
         front_default: string;
       };
     };
@@ -70,7 +70,7 @@ export interface SuperheroCharacter {
     combat: string;
   };
   biography: {
-    'full-name': string;
+    "full-name": string;
     alignment: string;
     publisher: string;
   };
@@ -93,6 +93,6 @@ export interface NormalizedCharacter {
   externalId: string;
   name: string;
   image: string;
-  category: 'rickandmorty' | 'pokemon' | 'superhero';
+  category: "rickandmorty" | "pokemon" | "superhero";
   metadata: Record<string, any>;
 }

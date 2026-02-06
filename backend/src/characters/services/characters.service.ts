@@ -1,10 +1,15 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Character, CharacterDocument } from '../entities/character.entity';
-import { ExternalApisService } from './external-apis.service';
-import { VoteDto, CharacterResponseDto, StatsResponseDto, PikachuStatusDto } from '../dto/character.dto';
-import { NormalizedCharacter } from '../interfaces/external-apis.interface';
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { Character, CharacterDocument } from "../entities/character.entity";
+import { ExternalApisService } from "./external-apis.service";
+import {
+  VoteDto,
+  CharacterResponseDto,
+  StatsResponseDto,
+  PikachuStatusDto,
+} from "../dto/character.dto";
+import { NormalizedCharacter } from "../interfaces/external-apis.interface";
 
 @Injectable()
 export class CharactersService {
@@ -20,7 +25,7 @@ export class CharactersService {
    * Obtiene un personaje aleatorio de las APIs externas
    */
   async getRandomCharacter(): Promise<NormalizedCharacter> {
-    this.logger.log('Getting random character from external APIs');
+    this.logger.log("Getting random character from external APIs");
     return this.externalApisService.getRandomCharacter();
   }
 
@@ -38,7 +43,7 @@ export class CharactersService {
 
       if (character) {
         // Si existe, actualizar el contador correspondiente
-        if (voteType === 'like') {
+        if (voteType === "like") {
           character.likes += 1;
         } else {
           character.dislikes += 1;
@@ -52,8 +57,8 @@ export class CharactersService {
           name,
           image,
           category,
-          likes: voteType === 'like' ? 1 : 0,
-          dislikes: voteType === 'dislike' ? 1 : 0,
+          likes: voteType === "like" ? 1 : 0,
+          dislikes: voteType === "dislike" ? 1 : 0,
           lastEvaluated: new Date(),
           metadata,
         });
@@ -61,7 +66,7 @@ export class CharactersService {
 
       return this.mapToResponseDto(character);
     } catch (error) {
-      this.logger.error('Error processing vote', error);
+      this.logger.error("Error processing vote", error);
       throw error;
     }
   }
@@ -70,30 +75,37 @@ export class CharactersService {
    * Obtiene las estadísticas generales
    */
   async getStats(): Promise<StatsResponseDto> {
-    this.logger.log('Getting general statistics');
+    this.logger.log("Getting general statistics");
 
-    const [mostLiked, mostDisliked, lastEvaluated, totalCharacters, votesAggregation] = 
-      await Promise.all([
-        this.characterModel.findOne().sort({ likes: -1 }).exec(),
-        this.characterModel.findOne().sort({ dislikes: -1 }).exec(),
-        this.characterModel.findOne().sort({ lastEvaluated: -1 }).exec(),
-        this.characterModel.countDocuments().exec(),
-        this.characterModel.aggregate([
-          {
-            $group: {
-              _id: null,
-              totalVotes: { $sum: { $add: ['$likes', '$dislikes'] } },
-            },
+    const [
+      mostLiked,
+      mostDisliked,
+      lastEvaluated,
+      totalCharacters,
+      votesAggregation,
+    ] = await Promise.all([
+      this.characterModel.findOne().sort({ likes: -1 }).exec(),
+      this.characterModel.findOne().sort({ dislikes: -1 }).exec(),
+      this.characterModel.findOne().sort({ lastEvaluated: -1 }).exec(),
+      this.characterModel.countDocuments().exec(),
+      this.characterModel.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalVotes: { $sum: { $add: ["$likes", "$dislikes"] } },
           },
-        ]),
-      ]);
+        },
+      ]),
+    ]);
 
     const totalVotes = votesAggregation[0]?.totalVotes || 0;
 
     return {
       mostLiked: mostLiked ? this.mapToResponseDto(mostLiked) : null,
       mostDisliked: mostDisliked ? this.mapToResponseDto(mostDisliked) : null,
-      lastEvaluated: lastEvaluated ? this.mapToResponseDto(lastEvaluated) : null,
+      lastEvaluated: lastEvaluated
+        ? this.mapToResponseDto(lastEvaluated)
+        : null,
       totalCharacters,
       totalVotes,
     };
@@ -103,15 +115,15 @@ export class CharactersService {
    * Obtiene el personaje con más likes
    */
   async getMostLiked(): Promise<CharacterResponseDto> {
-    this.logger.log('Getting most liked character');
-    
+    this.logger.log("Getting most liked character");
+
     const character = await this.characterModel
       .findOne()
       .sort({ likes: -1 })
       .exec();
 
     if (!character) {
-      throw new NotFoundException('No hay personajes evaluados todavía');
+      throw new NotFoundException("No hay personajes evaluados todavía");
     }
 
     return this.mapToResponseDto(character);
@@ -121,15 +133,15 @@ export class CharactersService {
    * Obtiene el personaje con más dislikes
    */
   async getMostDisliked(): Promise<CharacterResponseDto> {
-    this.logger.log('Getting most disliked character');
-    
+    this.logger.log("Getting most disliked character");
+
     const character = await this.characterModel
       .findOne()
       .sort({ dislikes: -1 })
       .exec();
 
     if (!character) {
-      throw new NotFoundException('No hay personajes evaluados todavía');
+      throw new NotFoundException("No hay personajes evaluados todavía");
     }
 
     return this.mapToResponseDto(character);
@@ -139,15 +151,15 @@ export class CharactersService {
    * Obtiene el último personaje evaluado
    */
   async getLastEvaluated(): Promise<CharacterResponseDto> {
-    this.logger.log('Getting last evaluated character');
-    
+    this.logger.log("Getting last evaluated character");
+
     const character = await this.characterModel
       .findOne()
       .sort({ lastEvaluated: -1 })
       .exec();
 
     if (!character) {
-      throw new NotFoundException('No hay personajes evaluados todavía');
+      throw new NotFoundException("No hay personajes evaluados todavía");
     }
 
     return this.mapToResponseDto(character);
@@ -157,14 +169,17 @@ export class CharactersService {
    * Obtiene el estatus de Pikachu
    */
   async getPikachuStatus(): Promise<PikachuStatusDto> {
-    this.logger.log('Checking Pikachu status');
+    this.logger.log("Checking Pikachu status");
 
-    const pikachu = await this.characterModel.findOne({ externalId: 'pokemon-25' });
+    const pikachu = await this.characterModel.findOne({
+      externalId: "pokemon-25",
+    });
 
     if (!pikachu) {
       return {
         exists: false,
-        message: 'Pikachu aún no ha sido evaluado. ¡Sé el primero en votar por él!',
+        message:
+          "Pikachu aún no ha sido evaluado. ¡Sé el primero en votar por él!",
       };
     }
 
@@ -179,8 +194,10 @@ export class CharactersService {
    * Obtiene todos los personajes evaluados (opcional, para debugging)
    */
   async getAllCharacters(): Promise<CharacterResponseDto[]> {
-    const characters = await this.characterModel.find().sort({ lastEvaluated: -1 });
-    return characters.map(char => this.mapToResponseDto(char));
+    const characters = await this.characterModel
+      .find()
+      .sort({ lastEvaluated: -1 });
+    return characters.map((char) => this.mapToResponseDto(char));
   }
 
   /**
@@ -195,7 +212,10 @@ export class CharactersService {
       likes: character.likes,
       dislikes: character.dislikes,
       totalVotes: character.likes + character.dislikes,
-      likePercentage: this.calculateLikePercentage(character.likes, character.dislikes),
+      likePercentage: this.calculateLikePercentage(
+        character.likes,
+        character.dislikes,
+      ),
       lastEvaluated: character.lastEvaluated,
       metadata: character.metadata,
     };

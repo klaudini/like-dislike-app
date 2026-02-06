@@ -1,29 +1,26 @@
-import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import axios, { AxiosInstance } from 'axios';
+import { Injectable, Logger, HttpException, HttpStatus } from "@nestjs/common";
+import axios, { AxiosInstance } from "axios";
 import {
-  RickAndMortyResponse,
   PokemonCharacter,
   SuperheroCharacter,
   NormalizedCharacter,
-  PokemonListResponse,
-  SuperheroSearchResponse,
-} from '../interfaces/external-apis.interface';
+} from "../interfaces/external-apis.interface";
 
 @Injectable()
 export class ExternalApisService {
   private readonly logger = new Logger(ExternalApisService.name);
   private readonly axiosInstance: AxiosInstance;
-  
+
   // URLs base de las APIs
-  private readonly RICK_MORTY_API = 'https://rickandmortyapi.com/api';
-  private readonly POKEMON_API = 'https://pokeapi.co/api/v2';
-  private readonly SUPERHERO_API = 'https://superheroapi.com/api';
+  private readonly RICK_MORTY_API = "https://rickandmortyapi.com/api";
+  private readonly POKEMON_API = "https://pokeapi.co/api/v2";
+  private readonly SUPERHERO_API = "https://superheroapi.com/api";
 
   constructor() {
     this.axiosInstance = axios.create({
       timeout: 10000,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
   }
@@ -35,7 +32,7 @@ export class ExternalApisService {
     try {
       const randomId = Math.floor(Math.random() * 826) + 1;
       const url = `${this.RICK_MORTY_API}/character/${randomId}`;
-      
+
       this.logger.log(`Fetching Rick and Morty character: ${url}`);
       const response = await this.axiosInstance.get(url);
       const character = response.data;
@@ -44,7 +41,7 @@ export class ExternalApisService {
         externalId: `rick-${character.id}`,
         name: character.name,
         image: character.image,
-        category: 'rickandmorty',
+        category: "rickandmorty",
         metadata: {
           status: character.status,
           species: character.species,
@@ -54,9 +51,9 @@ export class ExternalApisService {
         },
       };
     } catch (error) {
-      this.logger.error('Error fetching Rick and Morty character', error);
+      this.logger.error("Error fetching Rick and Morty character", error);
       throw new HttpException(
-        'Error al obtener personaje de Rick and Morty',
+        "Error al obtener personaje de Rick and Morty",
         HttpStatus.SERVICE_UNAVAILABLE,
       );
     }
@@ -69,29 +66,30 @@ export class ExternalApisService {
     try {
       const randomId = Math.floor(Math.random() * 1010) + 1;
       const url = `${this.POKEMON_API}/pokemon/${randomId}`;
-      
+
       this.logger.log(`Fetching Pokemon: ${url}`);
       const response = await this.axiosInstance.get<PokemonCharacter>(url);
       const pokemon = response.data;
 
-      const image = pokemon.sprites.other['official-artwork'].front_default || 
-                   pokemon.sprites.front_default;
+      const image =
+        pokemon.sprites.other["official-artwork"].front_default ||
+        pokemon.sprites.front_default;
 
       return {
         externalId: `pokemon-${pokemon.id}`,
         name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
         image: image,
-        category: 'pokemon',
+        category: "pokemon",
         metadata: {
           height: pokemon.height,
           weight: pokemon.weight,
-          types: pokemon.types.map(t => t.type.name),
+          types: pokemon.types.map((t) => t.type.name),
         },
       };
     } catch (error) {
-      this.logger.error('Error fetching Pokemon', error);
+      this.logger.error("Error fetching Pokemon", error);
       throw new HttpException(
-        'Error al obtener Pokémon',
+        "Error al obtener Pokémon",
         HttpStatus.SERVICE_UNAVAILABLE,
       );
     }
@@ -103,15 +101,17 @@ export class ExternalApisService {
   async getRandomSuperhero(): Promise<NormalizedCharacter> {
     try {
       const apiKey = process.env.SUPERHERO_API_KEY;
-      
+
       if (!apiKey) {
-        throw new Error('SUPERHERO_API_KEY no configurado en variables de entorno');
+        throw new Error(
+          "SUPERHERO_API_KEY no configurado en variables de entorno",
+        );
       }
 
       const randomId = Math.floor(Math.random() * 731) + 1;
       const url = `${this.SUPERHERO_API}/${apiKey}/${randomId}`;
-      
-      this.logger.log(`Fetching Superhero: ${url.replace(apiKey, '***')}`);
+
+      this.logger.log(`Fetching Superhero: ${url.replace(apiKey, "***")}`);
       const response = await this.axiosInstance.get<SuperheroCharacter>(url);
       const hero = response.data;
 
@@ -119,9 +119,9 @@ export class ExternalApisService {
         externalId: `hero-${hero.id}`,
         name: hero.name,
         image: hero.image.url,
-        category: 'superhero',
+        category: "superhero",
         metadata: {
-          fullName: hero.biography['full-name'],
+          fullName: hero.biography["full-name"],
           alignment: hero.biography.alignment,
           publisher: hero.biography.publisher,
           gender: hero.appearance.gender,
@@ -130,9 +130,9 @@ export class ExternalApisService {
         },
       };
     } catch (error) {
-      this.logger.error('Error fetching Superhero', error);
+      this.logger.error("Error fetching Superhero", error);
       throw new HttpException(
-        'Error al obtener superhéroe. Verifica que SUPERHERO_API_KEY esté configurado.',
+        "Error al obtener superhéroe. Verifica que SUPERHERO_API_KEY esté configurado.",
         HttpStatus.SERVICE_UNAVAILABLE,
       );
     }
@@ -142,20 +142,26 @@ export class ExternalApisService {
    * Obtiene un personaje aleatorio de cualquier categoría
    */
   async getRandomCharacter(): Promise<NormalizedCharacter> {
-    const categories = ['rickandmorty', 'pokemon', 'superhero'];
-    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const categories = ["rickandmorty", "pokemon", "superhero"];
+    const randomCategory =
+      categories[Math.floor(Math.random() * categories.length)];
 
-    this.logger.log(`Getting random character from category: ${randomCategory}`);
+    this.logger.log(
+      `Getting random character from category: ${randomCategory}`,
+    );
 
     switch (randomCategory) {
-      case 'rickandmorty':
+      case "rickandmorty":
         return this.getRandomRickAndMortyCharacter();
-      case 'pokemon':
+      case "pokemon":
         return this.getRandomPokemon();
-      case 'superhero':
+      case "superhero":
         return this.getRandomSuperhero();
       default:
-        throw new HttpException('Categoría inválida', HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new HttpException(
+          "Categoría inválida",
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
     }
   }
 
@@ -166,28 +172,29 @@ export class ExternalApisService {
     try {
       const url = `${this.POKEMON_API}/pokemon/pikachu`;
       this.logger.log(`Fetching Pikachu specifically: ${url}`);
-      
+
       const response = await this.axiosInstance.get<PokemonCharacter>(url);
       const pikachu = response.data;
 
-      const image = pikachu.sprites.other['official-artwork'].front_default || 
-                   pikachu.sprites.front_default;
+      const image =
+        pikachu.sprites.other["official-artwork"].front_default ||
+        pikachu.sprites.front_default;
 
       return {
         externalId: `pokemon-25`,
-        name: 'Pikachu',
+        name: "Pikachu",
         image: image,
-        category: 'pokemon',
+        category: "pokemon",
         metadata: {
           height: pikachu.height,
           weight: pikachu.weight,
-          types: pikachu.types.map(t => t.type.name),
+          types: pikachu.types.map((t) => t.type.name),
         },
       };
     } catch (error) {
-      this.logger.error('Error fetching Pikachu', error);
+      this.logger.error("Error fetching Pikachu", error);
       throw new HttpException(
-        'Error al obtener información de Pikachu',
+        "Error al obtener información de Pikachu",
         HttpStatus.SERVICE_UNAVAILABLE,
       );
     }
