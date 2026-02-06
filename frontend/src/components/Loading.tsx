@@ -8,7 +8,7 @@ export const Loading = () => {
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
       />
-      <p className="text-gray-600">Loading...</p>
+      <p className="text-gray-600">Cargando...</p>
     </div>
   );
 };
