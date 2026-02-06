@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "Like/Dislike Characters API",
+    "description": "Colección de Postman para probar todos los endpoints de la API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Characters",
+      "item": [
+        {
+          "name": "Get Random Character",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/characters/random",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "random"]
+            },
+            "description": "Obtiene un personaje aleatorio de Rick and Morty, Pokémon o Superhéroes"
+          },
+          "response": []
+        },
+        {
+          "name": "Vote Like",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"pokemon-25\",\n  \"voteType\": \"like\",\n  \"name\": \"Pikachu\",\n  \"image\": \"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png\",\n  \"category\": \"pokemon\",\n  \"metadata\": {\n    \"types\": [\"electric\"],\n    \"height\": 4,\n    \"weight\": 60\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/characters/vote",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "vote"]
+            },
+            "description": "Registra un voto LIKE para un personaje"
+          },
+          "response": []
+        },
+        {
+          "name": "Vote Dislike",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"rick-1\",\n  \"voteType\": \"dislike\",\n  \"name\": \"Rick Sanchez\",\n  \"image\": \"https://rickandmortyapi.com/api/character/avatar/1.jpeg\",\n  \"category\": \"rickandmorty\",\n  \"metadata\": {\n    \"status\": \"Alive\",\n    \"species\": \"Human\",\n    \"gender\": \"Male\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/characters/vote",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "vote"]
+            },
+            "description": "Registra un voto DISLIKE para un personaje"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Characters (Debug)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/characters/all",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "all"]
+            },
+            "description": "Obtiene todos los personajes evaluados (útil para debugging)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Get General Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/characters/stats",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "stats"]
+            },
+            "description": "Obtiene estadísticas generales: más votado, más rechazado, último evaluado, totales"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Most Liked",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/characters/most-liked",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "most-liked"]
+            },
+            "description": "Obtiene el personaje con más likes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Most Disliked",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/characters/most-disliked",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "most-disliked"]
+            },
+            "description": "Obtiene el personaje con más dislikes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Last Evaluated",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/characters/last-evaluated",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "last-evaluated"]
+            },
+            "description": "Obtiene el último personaje evaluado"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pikachu Status",
+      "item": [
+        {
+          "name": "Get Pikachu Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/characters/pikachu/status",
+              "host": ["{{base_url}}"],
+              "path": ["characters", "pikachu", "status"]
+            },
+            "description": "Obtiene el estatus de Pikachu (si ha sido evaluado)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
