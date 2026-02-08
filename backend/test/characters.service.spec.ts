@@ -89,9 +89,7 @@ describe("CharactersService", () => {
         metadata: { types: ["electric"] },
       };
 
-      mockCharacterModel.findOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
-      });
+      mockCharacterModel.findOne.mockResolvedValue(null);
 
       mockCharacterModel.create.mockResolvedValue({
         ...voteDto,
