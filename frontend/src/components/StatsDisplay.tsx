@@ -68,7 +68,7 @@ export const StatsDisplay = ({ stats, isLoading }: StatsDisplayProps) => {
         <div className="grid grid-cols-2 gap-4 pt-3">
           <div className="text-center">
             <p className="text-2xl font-bold text-gray-900">{stats.totalCharacters}</p>
-            <p className="text-sm text-gray-500">Characters</p>
+            <p className="text-sm text-gray-500">Personajes</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-gray-900">{stats.totalVotes}</p>
