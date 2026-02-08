@@ -3,19 +3,18 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copiar package files
+# Copia package files
 COPY package*.json ./
 
-# Instalar dependencias
+# Instala dependencias
 RUN npm ci
 
-# Copiar código fuente
+# Copia código fuente
 COPY . .
 
-# Compilar TypeScript
+# Compila TypeScript
 RUN npm run build
 
-# Etapa 2: Production
 FROM node:18-alpine
 
 WORKDIR /app
@@ -23,13 +22,13 @@ WORKDIR /app
 # Copiar package files
 COPY package*.json ./
 
-# Instalar solo dependencias de producción
+# Instala solo dependencias de producción
 RUN npm ci --only=production
 
-# Copiar código compilado desde builder
+# Copia código compilado desde builder
 COPY --from=builder /app/dist ./dist
 
-# Exponer puerto
+# puerto expuesto
 EXPOSE 3000
 
 # Comando de inicio
