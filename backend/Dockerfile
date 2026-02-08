@@ -10,7 +10,9 @@ COPY package*.json ./
 RUN npm ci
 
 # Copia código fuente
-COPY . .
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
+COPY src ./src
 
 # Compila TypeScript
 RUN npm run build
@@ -19,7 +21,7 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copiar package files
+# Copia package files
 COPY package*.json ./
 
 # Instala solo dependencias de producción
