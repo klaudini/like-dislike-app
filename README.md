@@ -8,7 +8,7 @@ Sistema de votación para personajes de Rick and Morty, Pokémon y Superhéroes.
 
 ### Requisitos
 - **Docker Desktop** instalado ([Descargar aquí](https://www.docker.com/products/docker-desktop))
-- Credenciales de acceso (enviadas por correo)
+- Credenciales para el ambiente enviadas por correo.
 
 ### Pasos
 
@@ -94,7 +94,7 @@ like-dislike-app/
 
 ## 📚 Documentación
 
-- Acá irà lo de arquitectura, diagramas, etc....
+- [Diagrama de Arquitectura](DIAGRAMA_ARQUITECTURA.md)
 
 ---
 
