@@ -2,7 +2,7 @@ export interface Character {
   externalId: string;
   name: string;
   image: string;
-  category: 'rickandmorty' | 'pokemon' | 'superhero';
+  category: 'rickandmorty' | 'pokemon' | 'superhero' | 'naruto';
   likes?: number;
   dislikes?: number;
   totalVotes?: number;
@@ -16,7 +16,7 @@ export interface VoteRequest {
   voteType: 'like' | 'dislike';
   name: string;
   image: string;
-  category: 'rickandmorty' | 'pokemon' | 'superhero';
+  category: 'rickandmorty' | 'pokemon' | 'superhero' | 'naruto';
   metadata?: Record<string, any>;
 }
 

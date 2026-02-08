@@ -37,12 +37,12 @@ export class VoteDto {
 
   @ApiProperty({
     description: "Categoría del personaje",
-    enum: ["rickandmorty", "pokemon", "superhero"],
+    enum: ["rickandmorty", "pokemon", "superhero", "naruto"],
     example: "pokemon",
   })
-  @IsEnum(["rickandmorty", "pokemon", "superhero"])
+  @IsEnum(["rickandmorty", "pokemon", "superhero", "naruto"])
   @IsNotEmpty()
-  category: "rickandmorty" | "pokemon" | "superhero";
+  category: "rickandmorty" | "pokemon" | "superhero" | "naruto";
 
   @ApiProperty({
     description: "Metadata adicional del personaje",
@@ -63,7 +63,7 @@ export class CharacterResponseDto {
   @ApiProperty({ example: "https://..." })
   image: string;
 
-  @ApiProperty({ enum: ["rickandmorty", "pokemon", "superhero"] })
+  @ApiProperty({ enum: ["rickandmorty", "pokemon", "superhero", "naruto"] })
   category: string;
 
   @ApiProperty({ example: 0 })

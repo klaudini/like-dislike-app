@@ -18,7 +18,7 @@ export class Character {
 
   @Prop({
     required: true,
-    enum: ["rickandmorty", "pokemon", "superhero"],
+    enum: ["rickandmorty", "pokemon", "superhero", "naruto"],
     index: true,
   })
   category: string;

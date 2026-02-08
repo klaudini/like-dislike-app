@@ -83,6 +83,14 @@ export interface SuperheroCharacter {
   };
 }
 
+export interface NarutoCharacter {
+  id: number;
+  name: string;
+  images: string[];
+  debut?: any;
+  personal?: any;
+}
+
 export interface SuperheroSearchResponse {
   response: string;
   results: SuperheroCharacter[];
@@ -93,6 +101,6 @@ export interface NormalizedCharacter {
   externalId: string;
   name: string;
   image: string;
-  category: "rickandmorty" | "pokemon" | "superhero";
+  category: "rickandmorty" | "pokemon" | "superhero" | "naruto";
   metadata: Record<string, any>;
 }

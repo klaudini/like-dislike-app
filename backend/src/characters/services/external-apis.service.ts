@@ -15,6 +15,7 @@ export class ExternalApisService {
   private readonly RICK_MORTY_API = "https://rickandmortyapi.com/api";
   private readonly POKEMON_API = "https://pokeapi.co/api/v2";
   private readonly SUPERHERO_API = "https://superheroapi.com/api";
+  private readonly NARUTO_API = "https://api-dattebayo.vercel.app";
 
   constructor() {
     this.axiosInstance = axios.create({
@@ -108,6 +109,7 @@ export class ExternalApisService {
         );
       }
 
+      // Hay 731 superhéroes en la API
       const randomId = Math.floor(Math.random() * 731) + 1;
       const url = `${this.SUPERHERO_API}/${apiKey}/${randomId}`;
 
@@ -139,10 +141,49 @@ export class ExternalApisService {
   }
 
   /**
+   * Obtiene un personaje aleatorio de Naruto
+   */
+  async getRandomNarutoCharacter(): Promise<NormalizedCharacter> {
+    try {
+      // Hay aproximadamente 1431 personajes en la API
+      const randomId = Math.floor(Math.random() * 1431) + 1;
+      const url = `${this.NARUTO_API}/characters/${randomId}`;
+
+      this.logger.log(`Fetching Naruto character: ${url}`);
+      const response = await this.axiosInstance.get(url);
+      const character = response.data;
+
+      // La API puede no tener todos los IDs consecutivos
+      if (!character || !character.name) {
+        // Si falla, intentar con otro ID recursivamente
+        return this.getRandomNarutoCharacter();
+      }
+
+      return {
+        externalId: `naruto-${character.id}`,
+        name: character.name,
+        image:
+          character.images && character.images.length > 0
+            ? character.images[0]
+            : "https://via.placeholder.com/300?text=No+Image",
+        category: "naruto",
+        metadata: {
+          debut: character.debut,
+          personal: character.personal,
+        },
+      };
+    } catch (error) {
+      this.logger.error("Error fetching Naruto character", error);
+      // Intentar de nuevo en caso de error (algunos IDs pueden no existir)
+      return this.getRandomNarutoCharacter();
+    }
+  }
+
+  /**
    * Obtiene un personaje aleatorio de cualquier categoría
    */
   async getRandomCharacter(): Promise<NormalizedCharacter> {
-    const categories = ["rickandmorty", "pokemon", "superhero"];
+    const categories = ["rickandmorty", "pokemon", "superhero", "naruto"];
     const randomCategory =
       categories[Math.floor(Math.random() * categories.length)];
 
@@ -157,6 +198,8 @@ export class ExternalApisService {
         return this.getRandomPokemon();
       case "superhero":
         return this.getRandomSuperhero();
+      case "naruto":
+        return this.getRandomNarutoCharacter();
       default:
         throw new HttpException(
           "Categoría inválida",
@@ -166,7 +209,7 @@ export class ExternalApisService {
   }
 
   /**
-   * Busca específicamente a Pikachu
+   * Busca específicamente a Pikachu (para el endpoint bonus)
    */
   async getPikachu(): Promise<NormalizedCharacter> {
     try {
