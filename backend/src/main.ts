@@ -11,8 +11,15 @@ async function bootstrap() {
   // manejo de errores
   app.useGlobalFilters(new AllExceptionsFilter());
 
+  app.setGlobalPrefix("api");
+
   // helmet para headers seguros
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      crossOriginEmbedderPolicy: false,
+    }),
+  );
 
   // CORS configurado desde variables de entorno
   const corsOrigins = process.env.CORS_ORIGIN?.split(",") || [
@@ -23,8 +30,6 @@ async function bootstrap() {
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     credentials: true,
   });
-
-  app.setGlobalPrefix("api");
 
   // Validación global de DTO
   app.useGlobalPipes(

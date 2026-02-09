@@ -1,12 +1,11 @@
-import { Injectable, Logger, HttpException, HttpStatus } from "@nestjs/common";
-import axios, { AxiosInstance } from "axios";
+import { HttpException, HttpStatus, Logger } from "@nestjs/common";
 import {
+  NormalizedCharacter,
   PokemonCharacter,
   SuperheroCharacter,
-  NormalizedCharacter,
-} from "../interfaces/external-apis.interface";
+} from "@/characters/interfaces/external-apis.interface";
+import axios, { AxiosInstance } from "axios";
 
-@Injectable()
 export class ExternalApisService {
   private readonly logger = new Logger(ExternalApisService.name);
   private readonly axiosInstance: AxiosInstance;
@@ -16,6 +15,10 @@ export class ExternalApisService {
   private readonly POKEMON_API = "https://pokeapi.co/api/v2";
   private readonly SUPERHERO_API = "https://superheroapi.com/api";
 
+  // ✅ AGREGAR: Cache de personajes recientes
+  private recentCharacters: string[] = [];
+  private readonly MAX_RECENT = 10;
+
   constructor() {
     this.axiosInstance = axios.create({
       timeout: 10000,
@@ -23,6 +26,84 @@ export class ExternalApisService {
         "Content-Type": "application/json",
       },
     });
+  }
+
+  /**
+   * Verifica si un personaje fue mostrado recientemente
+   */
+  private wasRecentlyShown(externalId: string): boolean {
+    return this.recentCharacters.includes(externalId);
+  }
+
+  /**
+   * Agrega personaje a la lista de recientes
+   */
+  private addToRecent(externalId: string): void {
+    this.recentCharacters.push(externalId);
+    if (this.recentCharacters.length > this.MAX_RECENT) {
+      this.recentCharacters.shift(); // Eliminar el más viejo
+    }
+  }
+
+  /**
+   * Obtiene un personaje aleatorio de cualquier categoría (sin repetir recientes)
+   */
+  async getRandomCharacter(): Promise<NormalizedCharacter> {
+    const categories = ["rickandmorty", "pokemon", "superhero"];
+    const maxAttempts = 5;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const randomCategory =
+        categories[Math.floor(Math.random() * categories.length)];
+      this.logger.log(
+        `Getting random character from category: ${randomCategory} (attempt ${attempt + 1})`,
+      );
+
+      let character: NormalizedCharacter;
+
+      switch (randomCategory) {
+        case "rickandmorty":
+          character = await this.getRandomRickAndMortyCharacter();
+          break;
+        case "pokemon":
+          character = await this.getRandomPokemon();
+          break;
+        case "superhero":
+          character = await this.getRandomSuperhero();
+          break;
+        default:
+          throw new HttpException(
+            "Categoría inválida",
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+      }
+
+      // Verificar si fue mostrado recientemente
+      if (!this.wasRecentlyShown(character.externalId)) {
+        this.addToRecent(character.externalId);
+        return character;
+      }
+
+      this.logger.log(
+        `Character ${character.externalId} was recently shown, trying again...`,
+      );
+    }
+
+    // Si después de 5 intentos no encuentra uno nuevo, retornar cualquiera
+    this.logger.warn(
+      "Could not find a unique character after 5 attempts, returning any",
+    );
+    const randomCategory =
+      categories[Math.floor(Math.random() * categories.length)];
+
+    switch (randomCategory) {
+      case "rickandmorty":
+        return this.getRandomRickAndMortyCharacter();
+      case "pokemon":
+        return this.getRandomPokemon();
+      case "superhero":
+        return this.getRandomSuperhero();
+    }
   }
 
   /**
@@ -135,33 +216,6 @@ export class ExternalApisService {
         "Error al obtener superhéroe. Verifica que SUPERHERO_API_KEY esté configurado.",
         HttpStatus.SERVICE_UNAVAILABLE,
       );
-    }
-  }
-
-  /**
-   * Obtiene un personaje aleatorio de cualquier categoría
-   */
-  async getRandomCharacter(): Promise<NormalizedCharacter> {
-    const categories = ["rickandmorty", "pokemon", "superhero"];
-    const randomCategory =
-      categories[Math.floor(Math.random() * categories.length)];
-
-    this.logger.log(
-      `Getting random character from category: ${randomCategory}`,
-    );
-
-    switch (randomCategory) {
-      case "rickandmorty":
-        return this.getRandomRickAndMortyCharacter();
-      case "pokemon":
-        return this.getRandomPokemon();
-      case "superhero":
-        return this.getRandomSuperhero();
-      default:
-        throw new HttpException(
-          "Categoría inválida",
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
     }
   }
 
