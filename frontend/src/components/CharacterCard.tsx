@@ -9,6 +9,13 @@ interface CharacterCardProps {
 }
 
 export const CharacterCard = ({ character, onLike, onDislike, isLoading }: CharacterCardProps) => {
+  const getProxiedImage = (originalUrl: string) => {
+    if (originalUrl.includes('superherodb.com')) {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+      return `${apiUrl}/characters/image-proxy?url=${encodeURIComponent(originalUrl)}`;
+    }
+    return originalUrl;
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -20,7 +27,7 @@ export const CharacterCard = ({ character, onLike, onDislike, isLoading }: Chara
       {/* Imagen */}
       <div className="relative w-full aspect-square mb-4 overflow-hidden rounded-lg bg-gray-100">
         <img
-          src={character.image}
+          src={getProxiedImage(character.image)}
           alt={character.name}
           className="w-full h-full object-cover"
           loading="lazy"
