@@ -5,10 +5,13 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  UseGuards,
+  // UseGuards,
+  Query,
+  Res,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from "@nestjs/swagger";
-import { ThrottlerGuard } from "@nestjs/throttler";
+import { Response } from "express";
+// import { ThrottlerGuard } from "@nestjs/throttler";
 import { CharactersService } from "../services/characters.service";
 import {
   VoteDto,
@@ -17,12 +20,16 @@ import {
   PikachuStatusDto,
 } from "../dto/character.dto";
 import { NormalizedCharacter } from "../interfaces/external-apis.interface";
+import { HttpService } from "@nestjs/axios";
 
 @ApiTags("characters")
 @Controller("characters")
-@UseGuards(ThrottlerGuard) // Rate limiting en todos los endpoints
+// @UseGuards(ThrottlerGuard) // // Se comenta, para evitar problemas de rate limiting.
 export class CharactersController {
-  constructor(private readonly charactersService: CharactersService) {}
+  constructor(
+    private readonly charactersService: CharactersService,
+    private readonly httpService: HttpService,
+  ) {}
 
   /**
    * Obtiene un personaje aleatorio para evaluar
@@ -43,6 +50,32 @@ export class CharactersController {
   })
   async getRandomCharacter(): Promise<NormalizedCharacter> {
     return this.charactersService.getRandomCharacter();
+  }
+
+  /**
+   * Proxy para imágenes de superhéroes (CORS)
+   */
+  @Get("image-proxy")
+  async getImageProxy(@Query("url") url: string, @Res() res: Response) {
+    try {
+      const response = await this.httpService.axiosRef.get(url, {
+        responseType: "arraybuffer",
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+        },
+      });
+
+      // Headers CORS explícitos
+      res.set("Content-Type", response.headers["content-type"] || "image/jpeg");
+      res.set("Cross-Origin-Resource-Policy", "cross-origin");
+      res.set("Access-Control-Allow-Origin", "*");
+      res.set("Access-Control-Allow-Methods", "GET");
+      res.set("Cache-Control", "public, max-age=86400");
+
+      res.send(response.data);
+    } catch (error) {
+      res.status(404).send("Image not found");
+    }
   }
 
   /**

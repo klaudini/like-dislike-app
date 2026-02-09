@@ -107,7 +107,7 @@ function App() {
 
       {/* Footer */}
       <footer className="text-center text-gray-500 text-sm">
-        <p>Rick and Morty • Pokémon • Superhero</p>
+        <p>Rick and Morty • Pokemon • Superhero</p>
       </footer>
     </div>
   );
