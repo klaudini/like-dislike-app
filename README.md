@@ -81,7 +81,7 @@ cd like-dislike-app
 
 Crear archivo `backend/.env`:
 ```env
-- Descompromir env.zip enviado por correo y copiar contenido de env_back en el .env creado.
+Descompromir env.zip enviado por correo y copiar contenido de env_back en el .env creado.
 ```
 
 Crear archivo `frontend/.env`:
@@ -147,8 +147,8 @@ docker exec -it like-dislike-mongodb mongosh
 cd backend
 npm install
 
-# Crear .env con las credenciales
-# Ver ejemplo en backend/.env.example
+# Crear .env con las credenciales enviadas al correo
+# Descompromir env.zip enviado por correo y copiar contenido de env_back en el .env creado.
 
 npm run start:dev
 ```
@@ -159,7 +159,7 @@ cd frontend
 npm install
 
 # Crear .env con la URL del backend
-echo "VITE_API_URL=http://localhost:3000/api" > .env
+# Descompromir env.zip enviado por correo y copiar contenido de env_front en el .env creado.
 
 npm run dev
 ```
